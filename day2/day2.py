@@ -3,7 +3,7 @@ test_data = """11-22,95-115,998-1012,1188511880-1188511890,222220-222224,1698522
 
 input_txt = None
 
-with open("/content/input_day2.txt", "r") as f:
+with open("input_day2.txt", "r") as f:
   input_txt = f.read()
 
 
@@ -19,7 +19,7 @@ class GiftSequence:
 
   def calculate_rng(self):
     for num in self.nums:
-      if self.calculate_invalid_ids(num):
+      if self.calculate_multiple_sequences_invalid_ids(num):
         self.invalids.append(num)
 
   def calculate_invalid_ids(self, num):
@@ -33,6 +33,19 @@ class GiftSequence:
     pattern = num_str[:half]
     if pattern * 2 == num_str:
         return True
+    return False
+
+  def calculate_multiple_sequences_invalid_ids(self, num):
+    num_str = str(num)
+    length = len(num_str)
+    
+    # We want to check if the string consists of n repetitions of a substring, where n >= 2
+    for i in range(1, length // 2 + 1):
+        if length % i == 0:
+            pattern = num_str[:i]
+            repetitions = length // i
+            if pattern * repetitions == num_str and repetitions >= 2:
+                return True
     return False
 
   def get_invalids(self):
@@ -64,4 +77,11 @@ class GiftIDs:
         self.invalid_ids.extend(new_rng)
   
   def get_sum(self):
-    return sum(self.check_invalid_ids)
+    total = 0
+    for num in self.invalid_ids:
+      total += num
+    return total
+
+
+gids = GiftIDs(test_data)
+print(gids.get_sum())
